@@ -1,0 +1,52 @@
+## three web servers and two haproxy nodes balancing traffic
+
+services:
+  web1:
+    image: chainguard/nginx:latest
+    volumes:
+      - type: bind
+        source: $PWD/www
+        target: /usr/share/nginx/html
+    networks:
+      - balanced-net
+    ports:
+      - 8083:8080
+  web2:
+    image: chainguard/nginx:latest
+    volumes:
+      - type: bind
+        source: $PWD/www
+        target: /usr/share/nginx/html
+    networks:
+      - balanced-net
+  web3:
+    image: chainguard/nginx:latest
+    volumes:
+      - type: bind
+        source: $PWD/www
+        target: /usr/share/nginx/html
+    networks:
+      - balanced-net
+  lb1:
+    image: chainguard/haproxy
+    volumes:
+      - type: bind
+        source: haproxy.cfg 
+        target: /usr/local/etc/haproxy/haproxy.cfg 
+    ports:
+      - 8081:80
+    networks:
+      - balanced-net
+  lb2:
+    image: chainguard/haproxy
+    volumes:
+      - type: bind
+        source: haproxy.cfg 
+        target: /usr/local/etc/haproxy/haproxy.cfg 
+    ports:
+      - 8082:80
+    networks:
+      - balanced-net
+
+networks:
+  balanced-net:
